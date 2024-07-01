@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -79,7 +81,22 @@ public class ProductController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @PostMapping("/top3")
+    public ResponseEntity<List<Product>> getTop3SimilarProducts(@RequestBody Map<String, List<String>> requestBody) {
+        try {
+            List<String> inputIngredients = requestBody.get("inputIngredients");
+            if (inputIngredients == null || inputIngredients.isEmpty()) {
+                return ResponseEntity.badRequest().body(null); // Return bad request if input is missing or empty
+            }
+
+            List<Product> top3Products = productService.getTop3SimilarProducts(inputIngredients);
+            return ResponseEntity.ok(top3Products);
+        } catch (Exception e) {
+            logger.error("Error getting top 3 similar products", e);
+            return ResponseEntity.status(500).body(null); // Return internal server error for other exceptions
+        }
     }
 
-
+    }
 

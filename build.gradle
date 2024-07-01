@@ -9,15 +9,37 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
+	// Use Maven Central repository
 	mavenCentral()
+
+	// Add Hugging Face repository
+	maven {
+		url 'https://huggingface.co/maven'
+	}
+
+	// JitPack repository if needed
+	maven { url 'https://jitpack.io' }
 }
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	implementation 'org.apache.commons:commons-math3:3.6.1'
+	implementation 'org.apache.commons:commons-text:1.9'
+
+//	implementation 'com.huggingface:transformers:4.31.0' // Adjust version as needed
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
