@@ -95,4 +95,6 @@ public class HarmfulIngredient {
     public void setCategories(String categories) {
         this.categories = categories;
     }
+
+
 }

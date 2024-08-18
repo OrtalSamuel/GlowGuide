@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface  ProductRepository extends MongoRepository<Product, String> {
    // @Query(value = "{}", fields = "{type : 1}")
@@ -22,5 +23,7 @@ public interface  ProductRepository extends MongoRepository<Product, String> {
     List<Product> findByIngredientsContaining(String ingredient);
 
 
+    Optional<Product> findByName(String name);
 
+    Optional<Product> findById(String id);
 }

@@ -30,6 +30,7 @@ public class HarmfulIngredientController {
         return harmfulIngredientService.getAllHarmfulIngredients();
     }
 
+    //http://localhost:8080/api/harmful-ingredients/by-inci-name?inciName=Triethanolamine
     @GetMapping("/by-inci-name")
     public HarmfulIngredient getHarmfulIngredientByInciName(@RequestParam String inciName) {
         return harmfulIngredientService.getHarmfulIngredientByInciName(inciName);

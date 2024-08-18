@@ -18,10 +18,27 @@ public class Product {
     @Field("ingridients")
     private String ingredients;
     private String afterUse;
-
     private List<String> harmfulIngredients; // New field for harmful ingredients
 
+    @Field("ingredient_vector")
+    private Map<CharSequence, Integer> ingredientVector;
 
+
+
+
+
+    public Product() {
+
+    }
+
+    // Getter and Setter for ingredientVector
+    public Map<CharSequence, Integer> getIngredientVector() {
+        return ingredientVector;
+    }
+
+    public void setIngredientVector(Map<CharSequence, Integer> ingredientVector) {
+        this.ingredientVector = ingredientVector;
+    }
 
     public String getId() {
         return id;

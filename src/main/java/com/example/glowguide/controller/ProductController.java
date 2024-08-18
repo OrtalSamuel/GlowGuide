@@ -6,14 +6,12 @@ import com.example.glowguide.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/products")
@@ -37,22 +35,24 @@ public class ProductController {
     @GetMapping("/all")
     public List<Product> getAllProducts() {
         List<Product> products = productService.getAllProducts();
-       // System.out.println("All Products: " + products);
+        System.out.println("All Products: " + products);
         return productService.getAllProducts();
     }
 
+   // "http://localhost:8080/api/products/by-type?type=Shampoo"
     @GetMapping("/by-type")
     public List<Product> getProductsByType(@RequestParam String type) {
         List<Product> products = productService.getProductsByType(type);
         logger.info("Products of type {}: {}", type, products);
         return products;
     }
-
+    //"http://localhost:8080/api/products/by-type?type=Hand%20Care"
     @DeleteMapping("/by-type")
     public void deleteProductsByType(@RequestParam String type) {
         productService.deleteProductsByType(type);
         System.out.println("Deleted products of type: " + type);
     }
+   // http://localhost:8080/api/products/by-ingredient?ingredient=Benzyl Alcohol
     @GetMapping("/by-ingredient")
     public List<Product> getProductsByIngredient(@RequestParam String ingredient) {
         List<Product> products = productService.getProductsByIngredient(ingredient);
@@ -71,6 +71,8 @@ public class ProductController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    //get the harmful ingredients
     @PostMapping("/harmful-ingredients")
     public ResponseEntity<Set<String>> getHarmfulIngredients(@RequestBody String ingredientsString) {
         try {
@@ -82,6 +84,24 @@ public class ProductController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    // Endpoint to check for harmful ingredients
+    @PostMapping("/check-harmful-ingredients")
+    public ResponseEntity<String> checkForHarmfulIngredients(@RequestBody Product product) {
+        try {
+            Optional<String> harmfulIngredient = productService.checkForHarmfulIngredients(product);
+            if (harmfulIngredient.isPresent()) {
+                return ResponseEntity.ok("Harmful ingredient found: " + harmfulIngredient.get());
+            } else {
+                return ResponseEntity.ok("No harmful ingredients found.");
+            }
+        } catch (Exception e) {
+            logger.error("Error checking for harmful ingredients", e);
+            return ResponseEntity.status(500).body("An error occurred while checking for harmful ingredients.");
+        }
+    }
+
+
 
     @PostMapping("/top6")
     public ResponseEntity<List<Product>> getTop3SimilarProducts(@RequestBody  List<String> inputIngredients) {
@@ -96,6 +116,42 @@ public class ProductController {
         } catch (Exception e) {
             logger.error("Error getting top 3 similar products", e);
             return ResponseEntity.status(500).body(null); // Return internal server error for other exceptions
+        }
+    }
+
+
+    @GetMapping("/by-name")
+    public ResponseEntity<Product> getProductByName(@RequestParam String name) {
+        try {
+            Optional<Product> product = productService.getProductByName(name);
+            if (product.isPresent()) {
+                logger.info("Product found: {}", product.get());
+                return ResponseEntity.ok(product.get());
+            } else {
+                logger.info("No product found with name: {}", name);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting product by name", e);
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+
+    @GetMapping("/by-id")
+    public ResponseEntity<Product> getProductById(@RequestParam String id) {
+        try {
+            Optional<Product> product = productService.getProductById(id);
+            if (product.isPresent()) {
+                logger.info("Product found: {}", product.get());
+                return ResponseEntity.ok(product.get());
+            } else {
+                logger.info("No product found with ID: {}", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting product by ID", e);
+            return ResponseEntity.status(500).body(null);
         }
     }
 
